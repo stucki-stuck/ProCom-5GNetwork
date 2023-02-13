@@ -22,18 +22,35 @@ spec:
         app: open5gs-mongodb
     spec:
       containers:
-      - image: bitnami/mongodb:latest
+      - image: bitnami/mongodb:4.4.1-debian-10-r39
         name: open5gs-mongodb
-        ports:
-        - containerPort: 27017
-          name: mongodb
         env:
         - name: DB_URI
-          value: mongodb://mongodb-svc/open5gs
+          value: mongodb://mongodb-svc/open5gs #TODO
+        command: 
+          - /bin/bash
+          - /add_admin.sh
+        volumeMounts:
+          - name: mongodb-cmap
+            mountPath: /add_admin.sh
+            subPath: add_admin.sh
+
+
+
+        ports:
+        - containerPort: 27017 #TODO 
+          name: mongodb
+        
         volumeMounts:
         - name: mongodb-persistent-storage
           mountPath: /data/db
+
+
+
       volumes:
+      - name: mongodb-cmap
+          configMap:
+            name: mongodb-cmap
       - name: mongodb-persistent-storage
         persistentVolumeClaim:
           claimName: mongodb-pv-claim
