@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pcf-cmap
+  labels:
+    nf-type: pcf
+data:
+  pcf.yaml: |
+    logger:
+        file: /open5gs/pcf.log
+    
+    db_uri: mongodb://mongodb-svc/open5gs    
+
+    pcf:
+      sbi:     
+      - addr: 0.0.0.0
+        advertise: pcf-svc
+    nrf:
+     sbi:
+      name: nrf-svc 

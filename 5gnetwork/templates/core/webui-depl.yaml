@@ -1,0 +1,109 @@
+{{- if .Values.webui.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "open5gs.fullname" . }}-webui
+  labels:
+{{ include "open5gs.labels.standard" . | indent 4 }}  
+    app.kubernetes.io/component: webui
+  annotations:
+    {{- with .Values.webui.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+
+spec:
+  rules:
+  {{- range .Values.webui.ingress.hosts }}
+    - host: {{ .name | quote }}
+      http:
+        paths:
+        {{- $paths := default (list "/") .paths }}
+        {{- range $paths }}
+          - path: {{ . }}
+            backend:
+              serviceName: {{ include "open5gs.fullname" $ }}-webui
+              servicePort: http
+        {{- end }}
+  {{- end }}
+  tls:
+  {{- range .Values.webui.ingress.hosts }}
+  {{- if .tls }}
+    - hosts:
+    {{- if .tlsHosts }}
+      {{- range $host := .tlsHosts }}
+        - {{ $host }}
+      {{- end }}
+    {{- else }}
+        - {{ .name }}
+    {{- end }}
+    {{- if .tlsSecret }}
+      secretName: {{ .tlsSecret }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+
+{{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: open5gs-webui
+  labels:
+    nf-type: webui
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 3000
+  selector:
+    nf-type: webui
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    nf-type: webui
+  name: open5gs-webui-nodeport
+spec:
+  type: NodePort
+  selector:
+    nf-type: webui
+  ports:
+    - protocol: TCP
+      port: 80  # Service port
+      targetPort: 3000 # Pod port
+      nodePort: 30080 # Node port
+  sessionAffinity: None
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: open5gs-webui 
+  labels:
+    nf-type: webui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nf-type: webui
+  template:
+    metadata:
+      labels:
+        nf-type: webui
+    spec:    
+      containers:
+      - name: webui
+        imagePullPolicy: {{ .Values.webui.image.pullPolicy }}
+        image: "{{ .Values.webui.image.repository }}:{{ .Values.webui.image.tag }}"      
+        env:
+        - name: DB_URI
+          value: mongodb://mongodb-svc/open5gs
+        - name: NODE_ENV
+          value: "production"  
+        - name: HOSTNAME
+          value: '0.0.0.0'  
+      imagePullSecrets:
+        - name: {{ .Values.webui.image.imagePullSecrets }}
+
+      nodeSelector:
+        kubernetes.io/hostname: {{ .Values.nodes.cluster }}

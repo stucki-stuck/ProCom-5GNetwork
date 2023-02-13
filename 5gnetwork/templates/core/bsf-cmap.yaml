@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bsf-cmap
+  labels:
+    nf-type: bsf
+data:
+  bsf.yaml: |
+    db_uri: mongodb://localhost/open5gs
+
+    logger:
+        file: /open5gs/bsf.log
+
+    bsf:
+      sbi:
+      - addr: 0.0.0.0
+        advertise: bsf-svc
+
+    nrf:
+     sbi:
+      name: nrf-svc

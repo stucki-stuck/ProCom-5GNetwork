@@ -1,0 +1,42 @@
+# Default values for 5gnetwork.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+open5gs:
+  image:
+    repository: sbarrachina/open5gs
+    tag: "v2.4.0"
+    pullPolicy: Always
+
+ueransim: # NEW 
+  gnb:
+    image:
+      repository: gitlab-registry.imt-atlantique.fr/b20stuck/mise-en-place-d-un-reseau-5g-dynamique/ueransim
+      pullPolicy: IfNotPresent
+      tag: "v0.3"
+      imagePullSecrets: gitlabimta
+
+webui:
+  image:
+    repository: gitlab-registry.imt-atlantique.fr/b20stuck/mise-en-place-d-un-reseau-5g-dynamique/open5gs-webui
+    pullPolicy: IfNotPresent
+    tag: "v0.1"
+    imagePullSecrets: gitlabimta
+
+# Data Network Names
+dnn: internet
+dnn2: mecnet
+
+amf:
+  mcc: '001'
+  mnc: '01'
+  tac: '1'
+
+# Where to deploy the NFs
+nodes:
+  cluster: 'computer2-5g'
+  mec: 'computer3-5g'
+
+# Primary/Native kubernetes interface
+k8s:
+ interface: eth0

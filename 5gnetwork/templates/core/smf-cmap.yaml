@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: smf-cmap
+  labels:
+    nf-type: smf
+data:
+  smf.yaml: |
+    logger:
+        file: /open5gs/smf.log
+
+    parameter:
+        no_ipv6: true
+
+    smf:
+        sbi:     
+        - addr: 0.0.0.0
+          advertise: smf-svc
+        pfcp:
+           dev: {{ .Values.k8s.interface }}
+        gtpc:
+          dev: {{ .Values.k8s.interface }}
+        gtpu:
+          dev: {{ .Values.k8s.interface }}    
+        subnet:
+         - addr: 10.45.0.1/16
+           dnn: {{ .Values.dnn }}
+         - addr: 10.46.0.1/16
+           dnn: {{ .Values.dnn2 }}
+        dns:
+          - 8.8.8.8
+          - 8.8.4.4
+        mtu: 1400
+
+    nrf:
+     sbi:
+      name: nrf-svc
+
+    upf:
+      pfcp:
+        - name: upf-svc
+          dnn: {{ .Values.dnn }}
+        - name: upfmec-svc
+          dnn: {{ .Values.dnn2 }}

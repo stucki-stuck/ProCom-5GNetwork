@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: udm-svc
+  labels:
+    nf-type: udm
+spec:
+  selector:
+    nf-type: udm
+  ports:
+    - protocol: TCP
+      port: 80   
+      targetPort: 80
+---  
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: udm-depl
+  labels:
+    nf-type: udm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nf-type: udm
+  template:
+    metadata:
+      labels:
+        nf-type: udm
+    spec:   
+      containers:
+        - name: udm
+          image: "{{ .Values.open5gs.image.repository }}:{{ .Values.open5gs.image.tag }}"
+          imagePullPolicy: {{ .Values.open5gs.image.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args:
+          - cd /open5gs;
+            ./install/bin/open5gs-udmd -c /open5gs/config-map/udm.yaml;
+            echo '********* Should not get here --> this means UDM is broken!'
+          volumeMounts:
+          - name: udm-cmap
+            mountPath: /open5gs/config-map/udm.yaml
+            subPath: "udm.yaml"
+      volumes:
+        - name: udm-cmap
+          configMap:
+            name: udm-cmap
+      nodeSelector:
+        kubernetes.io/hostname: {{ .Values.nodes.cluster }}

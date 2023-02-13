@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nrf-svc
+  labels:
+    nf-type: nrf
+spec:
+  selector:
+    nf-type: nrf
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: nrf-depl
+  labels:
+    nf-type: nrf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nf-type: nrf
+  template:
+    metadata:
+      labels:
+        nf-type: nrf
+    spec:  
+      containers:
+        - name: nrf
+          image: "{{ .Values.open5gs.image.repository }}:{{ .Values.open5gs.image.tag }}"
+          imagePullPolicy: {{ .Values.open5gs.image.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args:
+          - cd /open5gs;
+            ./install/bin/open5gs-nrfd -c /open5gs/config-map/nrf.yaml;
+            echo '********* Should not get here --> this means NRF is broken!'
+          volumeMounts:
+            - name: nrf-cmap
+              mountPath: /open5gs/config-map/nrf.yaml
+              subPath: "nrf.yaml"
+      volumes:
+        - name: nrf-cmap
+          configMap:
+            name: nrf-cmap
+      nodeSelector:
+        kubernetes.io/hostname: {{ .Values.nodes.cluster }}

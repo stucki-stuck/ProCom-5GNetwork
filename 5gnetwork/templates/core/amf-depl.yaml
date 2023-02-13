@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: amf-svc
+  labels:
+    nf-type: amf
+spec:
+  selector:
+    nf-type: amf
+  ports:
+    - protocol: TCP
+      port: 80   
+      targetPort: 80      
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    nf-type: amf
+  name: amfran-svc
+spec:
+  type: NodePort
+  selector:
+    nf-type: amf
+  ports:
+    - protocol: SCTP
+      port: 38412  # Service port
+      targetPort: 38412 # Pod port
+      nodePort: 30002 # Node port
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: amf-depl
+  labels:
+    nf-type: amf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nf-type: amf
+  template:
+    metadata:
+      labels:
+        nf-type: amf
+    spec:    
+      containers:
+        - name: amf
+          image: "{{ .Values.open5gs.image.repository }}:{{ .Values.open5gs.image.tag }}"
+          imagePullPolicy: {{ .Values.open5gs.image.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args:
+          - cd /open5gs;
+            ./install/bin/open5gs-amfd -c /open5gs/config-map/amf.yaml;
+            echo '********* Should not get here --> this means AMF is broken!'
+          volumeMounts:
+          - name: amf-cmap
+            mountPath: /open5gs/config-map/amf.yaml
+            subPath: "amf.yaml"
+      volumes:
+        - name: amf-cmap
+          configMap:
+            name: amf-cmap
+      nodeSelector:
+        kubernetes.io/hostname: {{ .Values.nodes.cluster }}

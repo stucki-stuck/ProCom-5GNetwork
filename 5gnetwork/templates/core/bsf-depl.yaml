@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bsf-svc
+  labels:
+    nf-type: bsf
+spec:
+  selector:
+    nf-type: bsf
+  ports:
+    - protocol: TCP
+      port: 80   
+      targetPort: 80
+---  
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: bsf-depl
+  labels:
+    nf-type: bsf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nf-type: bsf
+  template:
+    metadata:
+      labels:
+        nf-type: bsf
+    spec:    
+      containers:
+        - name: bsf
+          image: "{{ .Values.open5gs.image.repository }}:{{ .Values.open5gs.image.tag }}"
+          imagePullPolicy: {{ .Values.open5gs.image.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args:
+          - cd /open5gs;
+            ./install/bin/open5gs-bsfd -c /open5gs/config-map/bsf.yaml;
+            echo '********* Should not get here --> this means BSF is broken!'
+          volumeMounts:
+          - name: bsf-cmap
+            mountPath: /open5gs/config-map/bsf.yaml
+            subPath: "bsf.yaml"
+      volumes:
+        - name: bsf-cmap
+          configMap:
+            name: bsf-cmap
+      nodeSelector:
+        kubernetes.io/hostname: {{ .Values.nodes.cluster }}

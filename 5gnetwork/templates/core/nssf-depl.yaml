@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nssf-svc
+  labels:
+    nf-type: nssf
+spec:
+  selector:
+    nf-type: nssf
+  ports:
+    - protocol: TCP
+      port: 80 
+      targetPort: 80  
+---  
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: nssf-depl  
+  labels:
+    nf-type: nssf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nf-type: nssf
+  template:
+    metadata:
+      labels:
+        nf-type: nssf
+    spec:   
+      containers:
+        - name: nssf
+          image: "{{ .Values.open5gs.image.repository }}:{{ .Values.open5gs.image.tag }}"
+          imagePullPolicy: {{ .Values.open5gs.image.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args:
+          - cd /open5gs;
+            ./install/bin/open5gs-nssfd -c /open5gs/config-map/nssf.yaml;
+            echo '********* Should not get here --> this means NSSF is broken!'
+          volumeMounts:
+          - name: nssf-cmap
+            mountPath: /open5gs/config-map/nssf.yaml
+            subPath: "nssf.yaml"          
+      volumes:
+        - name: nssf-cmap
+          configMap:
+            name: nssf-cmap     
+      nodeSelector:
+        kubernetes.io/hostname: {{ .Values.nodes.cluster }}

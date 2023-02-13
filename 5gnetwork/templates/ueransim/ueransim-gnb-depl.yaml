@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ueransim-gnb-svc
+  labels:
+    nf-type: ueransim-gnb
+spec:
+  selector:
+    nf-type: ueransim-gnb
+  ports:
+    - protocol: TCP
+      port: 80 
+      targetPort: 80  
+---  
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: ueransim-gnb-depl
+  labels:
+    nf-type: ueransim-gnb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nf-type: ueransim-gnb
+  template:
+    metadata:
+      labels:
+        nf-type: ueransim-gnb
+    spec:    
+      containers:
+        - name: ueransim-gnb
+          image: "{{ .Values.ueransim.gnb.image.repository }}:{{ .Values.ueransim.gnb.image.tag }}"
+          imagePullPolicy: {{ .Values.ueransim.gnb.image.pullPolicy }}
+          env:
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          command: ["/bin/sh", "-c"]
+          args: #TODO change the sleep 
+          - cd /UERANSIM;
+            ls build config;
+            sleep 60; 
+            ./build/nr-gnb -c config/open5gs-gnb.yaml;
+            echo '********* Should not get here --> this means ueransim-gnb is broken!'
+          volumeMounts:
+          - name: ueransim-gnb-cmap
+            mountPath: /UERANSIM/config/open5gs-gnb.yaml
+            subPath: "open5gs-gnb.yaml"          
+      volumes:
+        - name: ueransim-gnb-cmap
+          configMap:
+            name: ueransim-gnb-cmap  
+      imagePullSecrets:
+        - name: {{ .Values.ueransim.gnb.image.imagePullSecrets }}
+      nodeSelector:
+        kubernetes.io/hostname: {{ .Values.nodes.cluster }}

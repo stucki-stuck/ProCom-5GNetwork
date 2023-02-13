@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ausf-svc
+  labels:
+    nf-type: ausf
+spec:
+  selector:
+    nf-type: ausf
+  ports:
+    - protocol: TCP
+      port: 80   
+      targetPort: 80
+---  
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: ausf-depl
+  labels:
+    nf-type: ausf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nf-type: ausf
+  template:
+    metadata:
+      labels:
+        nf-type: ausf
+    spec:    
+      containers:
+        - name: ausf
+          image: "{{ .Values.open5gs.image.repository }}:{{ .Values.open5gs.image.tag }}"
+          imagePullPolicy: {{ .Values.open5gs.image.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args:
+          - cd /open5gs;
+            ./install/bin/open5gs-ausfd -c /open5gs/config-map/ausf.yaml;
+            echo '********* Should not get here --> this means AUSF is broken!'
+          volumeMounts:
+          - name: ausf-cmap
+            mountPath: /open5gs/config-map/ausf.yaml
+            subPath: "ausf.yaml"
+      volumes:
+        - name: ausf-cmap
+          configMap:
+            name: ausf-cmap
+      nodeSelector:
+        kubernetes.io/hostname: {{ .Values.nodes.cluster }}

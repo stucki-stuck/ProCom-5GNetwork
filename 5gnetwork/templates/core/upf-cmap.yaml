@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: upf-cmap
+  labels:
+    nf-type: upf
+data:
+  upf.yaml: |
+    logger:
+        file: /open5gs/upf.log
+    upf:
+        pfcp:
+           dev: {{ .Values.k8s.interface }} # Host IP
+        gtpu:
+           dev: {{ .Values.k8s.interface }} # Host IP
+        subnet:
+          - addr: 10.45.0.1/16
+            dnn: {{ .Values.dnn }}
+            dev: ogstun

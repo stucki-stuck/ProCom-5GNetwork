@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ausf-cmap
+  labels:
+    nf-type: ausf
+data:
+  ausf.yaml: |
+    logger:
+        file: /open5gs/ausf.log
+
+    ausf:
+      sbi:
+      - addr: 0.0.0.0
+        advertise: ausf-svc
+
+    nrf:
+     sbi:
+      name: nrf-svc

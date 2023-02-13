@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: upfmec-svc
+  labels:
+    nf-type: upfmec
+spec:
+  selector:
+    nf-type: upfmec
+  ports:
+    - protocol: UDP
+      port: 8805
+      targetPort: 8805
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata: # metadata on the deployment
+  name: upfmec-depl
+  labels:
+    nf-type: upfmec
+spec: # desired state of deployment
+  replicas: 1
+  selector:
+    matchLabels:
+      nf-type: upfmec
+  template: 
+    metadata: # metadata on the pod
+      annotations:
+        linkerd.io/inject: disabled
+      labels:
+        nf-type: upfmec
+    spec: # desired state of pod
+      containers:
+        - name: upfmec
+          image: "{{ .Values.open5gs.image.repository }}:{{ .Values.open5gs.image.tag }}"
+          imagePullPolicy: {{ .Values.open5gs.image.pullPolicy }}
+          securityContext:
+            privileged: true
+          command: ["/bin/sh", "-c"]
+          args:
+          - ip tuntap add name ogstun2 mode tun;
+            ip addr add 10.46.0.1/16 dev ogstun2;
+            sysctl -w net.ipv6.conf.all.disable_ipv6=1;
+            ip link set ogstun2 up;
+            sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward";       
+            iptables -t nat -A POSTROUTING -s 10.46.0.0/16 ! -o ogstun2 -j MASQUERADE;
+            cd /open5gs;
+            ./install/bin/open5gs-upfd -c /open5gs/config-map/upf.yaml;
+            echo '********* Should not get here --> this means UPF-MEC is broken!'
+          volumeMounts: #  where to mount volumes into containers in
+          - name: upfmec-cmap
+            mountPath: /open5gs/config-map/upf.yaml
+            subPath: "upf.yaml"
+          - name: dev-net-tun
+            mountPath: /dev/net/tun
+                       
+      volumes:
+        - name: upfmec-cmap
+          configMap:
+            name: upfmec-cmap
+        - name: dev-net-tun
+          hostPath:
+            path: /dev/net/tun
+      
+      nodeSelector:
+        kubernetes.io/hostname: {{ .Values.nodes.mec }}
