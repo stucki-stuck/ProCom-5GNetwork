@@ -41,6 +41,8 @@ spec:
           - name: bsf-cmap
             mountPath: /open5gs/config-map/bsf.yaml
             subPath: "bsf.yaml"
+      imagePullSecrets:
+        - name: {{ .Values.open5gs.image.imagePullSecrets }}
       volumes:
         - name: bsf-cmap
           configMap:

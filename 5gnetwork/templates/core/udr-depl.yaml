@@ -41,6 +41,8 @@ spec:
           - name: udr-cmap
             mountPath: /open5gs/config-map/udr.yaml
             subPath: "udr.yaml"          
+      imagePullSecrets:
+        - name: {{ .Values.open5gs.image.imagePullSecrets }}
       volumes:
         - name: udr-cmap
           configMap:

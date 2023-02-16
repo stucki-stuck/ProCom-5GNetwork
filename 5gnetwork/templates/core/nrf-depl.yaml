@@ -41,6 +41,8 @@ spec:
             - name: nrf-cmap
               mountPath: /open5gs/config-map/nrf.yaml
               subPath: "nrf.yaml"
+      imagePullSecrets:
+        - name: {{ .Values.open5gs.image.imagePullSecrets }}
       volumes:
         - name: nrf-cmap
           configMap:

@@ -41,6 +41,8 @@ spec:
           - name: nssf-cmap
             mountPath: /open5gs/config-map/nssf.yaml
             subPath: "nssf.yaml"          
+      imagePullSecrets:
+        - name: {{ .Values.open5gs.image.imagePullSecrets }}
       volumes:
         - name: nssf-cmap
           configMap:

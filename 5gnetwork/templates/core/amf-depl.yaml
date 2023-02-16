@@ -57,6 +57,8 @@ spec:
           - name: amf-cmap
             mountPath: /open5gs/config-map/amf.yaml
             subPath: "amf.yaml"
+      imagePullSecrets:
+        - name: {{ .Values.open5gs.image.imagePullSecrets }}
       volumes:
         - name: amf-cmap
           configMap:

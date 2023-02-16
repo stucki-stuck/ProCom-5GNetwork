@@ -53,6 +53,8 @@ spec: # desired state of deployment
             subPath: "upf.yaml"
           - name: dev-net-tun
             mountPath: /dev/net/tun
+      imagePullSecrets:
+        - name: {{ .Values.open5gs.image.imagePullSecrets }}
                        
       volumes:
         - name: upf-cmap

@@ -41,6 +41,8 @@ spec:
           - name: pcf-cmap
             mountPath: /open5gs/config-map/pcf.yaml
             subPath: "pcf.yaml"          
+      imagePullSecrets:
+        - name: {{ .Values.open5gs.image.imagePullSecrets }}
       volumes:
         - name: pcf-cmap
           configMap:

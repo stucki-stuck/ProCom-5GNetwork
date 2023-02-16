@@ -41,6 +41,8 @@ spec:
           - name: smf-cmap
             mountPath: /open5gs/config-map/smf.yaml
             subPath: "smf.yaml"                                       
+      imagePullSecrets:
+        - name: {{ .Values.open5gs.image.imagePullSecrets }}
       volumes:
         - name: smf-cmap
           configMap:

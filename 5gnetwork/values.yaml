@@ -4,16 +4,17 @@
 
 open5gs:
   image:
-    repository: sbarrachina/open5gs
-    tag: "v2.4.0"
-    pullPolicy: Always
+    repository: gitlab-registry.imt-atlantique.fr/b20stuck/mise-en-place-d-un-reseau-5g-dynamique/open5gs
+    pullPolicy: IfNotPresent
+    tag: "v0.1"
+    imagePullSecrets: gitlabimta
 
 ueransim: # NEW 
   gnb:
     image:
       repository: gitlab-registry.imt-atlantique.fr/b20stuck/mise-en-place-d-un-reseau-5g-dynamique/ueransim
       pullPolicy: IfNotPresent
-      tag: "v0.3"
+      tag: "v0.4"
       imagePullSecrets: gitlabimta
 
 webui:
@@ -41,6 +42,7 @@ nodes:
 k8s:
  interface: eth0
 
+# Mongodb is depolyed with bitnami cf chart.yaml
 mongodb:
   service:
     nameOverride: "mongodb-5g-svc"
