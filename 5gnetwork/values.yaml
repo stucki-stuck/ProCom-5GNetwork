@@ -40,3 +40,11 @@ nodes:
 # Primary/Native kubernetes interface
 k8s:
  interface: eth0
+
+mongodb:
+  service:
+    nameOverride: "mongodb-5g-svc"
+  auth:
+    enabled: false
+  persistence:
+    enabled: false

@@ -1,0 +1,8 @@
+5gnetwork/charts/
+5gnetwork/Chart.lock
+
+# Various IDEs
+.project
+.idea/
+*.tmproj
+.vscode/

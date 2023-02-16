@@ -20,5 +20,4 @@ data:
     }
     EOF
 
-    mongo $DB_URI /tmp/account.js
-    rm -f /tmp/account.js
+    mongosh admin --host $MDB_HOST < /tmp/account.js

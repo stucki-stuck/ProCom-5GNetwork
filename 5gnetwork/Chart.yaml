@@ -25,12 +25,6 @@ appVersion: "v2.6.0"
 
 
 dependencies:
-  - name: common
-    repository: https://charts.bitnami.com/bitnami
-    tags:
-      - bitnami-common
-    version: 1.x.x
   - name: mongodb
-    version: ~12.1.19
     repository: https://charts.bitnami.com/bitnami
-    condition: mongodb.enabled
+    version: '^13'
