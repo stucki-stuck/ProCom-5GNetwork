@@ -62,6 +62,3 @@ spec: # desired state of deployment
         - name: dev-net-tun
           hostPath:
             path: /dev/net/tun
-      
-      nodeSelector:
-        kubernetes.io/hostname: {{ .Values.nodes.mec }}

@@ -10,12 +10,13 @@ open5gs:
     imagePullSecrets: gitlabimta
 
 ueransim: # NEW 
-  gnb:
-    image:
-      repository: gitlab-registry.imt-atlantique.fr/b20stuck/mise-en-place-d-un-reseau-5g-dynamique/ueransim
-      pullPolicy: IfNotPresent
-      tag: "v0.4"
-      imagePullSecrets: gitlabimta
+  image:
+    repository: gitlab-registry.imt-atlantique.fr/b20stuck/mise-en-place-d-un-reseau-5g-dynamique/ueransim
+    pullPolicy: IfNotPresent
+    tag: "v0.4"
+    imagePullSecrets: gitlabimta
+  ue:
+    initialMSISDN: '0000000001'
 
 webui:
   image:
@@ -23,6 +24,11 @@ webui:
     pullPolicy: IfNotPresent
     tag: "v0.1"
     imagePullSecrets: gitlabimta
+  initContainer:
+    image:
+      repository: bitnami/mongodb
+      pullPolicy: IfNotPresent
+      tag: "latest"
 
 # Data Network Names
 dnn: internet
@@ -32,11 +38,6 @@ amf:
   mcc: '001'
   mnc: '01'
   tac: '1'
-
-# Where to deploy the NFs
-nodes:
-  cluster: 'computer2-5g'
-  mec: 'computer3-5g'
 
 # Primary/Native kubernetes interface
 k8s:

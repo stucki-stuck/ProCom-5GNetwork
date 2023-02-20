@@ -47,5 +47,3 @@ spec:
         - name: bsf-cmap
           configMap:
             name: bsf-cmap
-      nodeSelector:
-        kubernetes.io/hostname: {{ .Values.nodes.cluster }}

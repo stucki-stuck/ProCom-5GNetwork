@@ -1,0 +1,45 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: ueransim-ue-depl
+  labels:
+    nf-type: ueransim-ue
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      nf-type: ueransim-ue
+  template:
+    metadata:
+      labels:
+        nf-type: ueransim-ue
+    spec:  
+      initContainers:
+      - name: wait-for-gnb-before-starup
+        image: busybox:latest
+        command:  ["/bin/sh", "-c"]   
+        args:
+          - echo wait-for-gnb-before-starup;
+            until nc -u -z ueransim-gnb-svc 4997 > /dev/null; 
+            do echo Waiting for gnb.; 
+            sleep 2;
+            done; echo gnb started; sleep 60; echo done;
+      containers:
+        - name: ueransim-ue
+          image: "{{ .Values.ueransim.image.repository }}:{{ .Values.ueransim.image.tag }}"
+          imagePullPolicy: {{ .Values.ueransim.image.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args:
+          - cd /UERANSIM;
+            ./build/nr-ue -c config/open5gs-ue.yaml;
+            echo '********* Should not get here --> this means ueransim-ue is broken!'
+          volumeMounts:
+          - name: ueransim-ue-cmap
+            mountPath: /UERANSIM/config/open5gs-ue.yaml
+            subPath: "open5gs-ue.yaml"          
+      volumes:
+        - name: ueransim-ue-cmap
+          configMap:
+            name: ueransim-ue-cmap  
+      imagePullSecrets:
+        - name: {{ .Values.ueransim.image.imagePullSecrets }}

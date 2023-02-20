@@ -47,5 +47,3 @@ spec:
         - name: smf-cmap
           configMap:
             name: smf-cmap  
-      nodeSelector:
-        kubernetes.io/hostname: {{ .Values.nodes.cluster }}

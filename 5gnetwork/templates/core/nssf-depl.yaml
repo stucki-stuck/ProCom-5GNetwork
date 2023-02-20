@@ -47,5 +47,3 @@ spec:
         - name: nssf-cmap
           configMap:
             name: nssf-cmap     
-      nodeSelector:
-        kubernetes.io/hostname: {{ .Values.nodes.cluster }}

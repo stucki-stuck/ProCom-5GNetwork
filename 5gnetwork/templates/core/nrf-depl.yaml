@@ -47,5 +47,3 @@ spec:
         - name: nrf-cmap
           configMap:
             name: nrf-cmap
-      nodeSelector:
-        kubernetes.io/hostname: {{ .Values.nodes.cluster }}

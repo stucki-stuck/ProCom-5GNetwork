@@ -47,7 +47,8 @@ spec:
     spec:    
       initContainers:
         - name: init
-          image: bitnami/mongodb:latest #TODO
+          imagePullPolicy: {{ .Values.webui.initContainer.image.pullPolicy }}
+          image: "{{ .Values.webui.initContainer.image.repository }}:{{ .Values.webui.initContainer.image.tag }}"  
           env:
           - name: MDB_HOST
             value: mongodb-5g-svc
@@ -71,11 +72,7 @@ spec:
           value: '0.0.0.0'  
       imagePullSecrets:
         - name: {{ .Values.webui.image.imagePullSecrets }}
-
       volumes:
         - name: account-creation
           configMap:
             name: mongodb-cmap
-
-      nodeSelector:
-        kubernetes.io/hostname: {{ .Values.nodes.cluster }}

@@ -47,5 +47,3 @@ spec:
         - name: ausf-cmap
           configMap:
             name: ausf-cmap
-      nodeSelector:
-        kubernetes.io/hostname: {{ .Values.nodes.cluster }}

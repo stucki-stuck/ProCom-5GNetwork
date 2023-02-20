@@ -8,9 +8,9 @@ spec:
   selector:
     nf-type: ueransim-gnb
   ports:
-    - protocol: TCP
-      port: 80 
-      targetPort: 80  
+    - protocol: UDP
+      port: 4997
+      targetPort: 4997 
 ---  
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
@@ -27,21 +27,24 @@ spec:
     metadata:
       labels:
         nf-type: ueransim-gnb
-    spec:    
+    spec: 
+      initContainers:
+      - name: wait-for-amf-before-starup
+        image: busybox:latest
+        command:  ["/bin/sh", "-c"]   
+        args:
+          - echo wait-for-amf-before-starup;
+            until nc -u -z amfran-svc 38412 > /dev/null; 
+            do echo Waiting for amfran.; 
+            sleep 2;
+            done; echo amf started; sleep 30; echo done;
       containers:
         - name: ueransim-gnb
-          image: "{{ .Values.ueransim.gnb.image.repository }}:{{ .Values.ueransim.gnb.image.tag }}"
-          imagePullPolicy: {{ .Values.ueransim.gnb.image.pullPolicy }}
-          env:
-          - name: POD_IP
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
+          image: "{{ .Values.ueransim.image.repository }}:{{ .Values.ueransim.image.tag }}"
+          imagePullPolicy: {{ .Values.ueransim.image.pullPolicy }}
           command: ["/bin/sh", "-c"]
-          args: #TODO change the sleep 
+          args:
           - cd /UERANSIM;
-            ls build config;
-            sleep 60; 
             ./build/nr-gnb -c config/open5gs-gnb.yaml;
             echo '********* Should not get here --> this means ueransim-gnb is broken!'
           volumeMounts:
@@ -53,6 +56,4 @@ spec:
           configMap:
             name: ueransim-gnb-cmap  
       imagePullSecrets:
-        - name: {{ .Values.ueransim.gnb.image.imagePullSecrets }}
-      nodeSelector:
-        kubernetes.io/hostname: {{ .Values.nodes.cluster }}
+        - name: {{ .Values.ueransim.image.imagePullSecrets }}

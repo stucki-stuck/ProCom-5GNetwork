@@ -47,5 +47,3 @@ spec:
         - name: pcf-cmap
           configMap:
             name: pcf-cmap  
-      nodeSelector:
-        kubernetes.io/hostname: {{ .Values.nodes.cluster }}

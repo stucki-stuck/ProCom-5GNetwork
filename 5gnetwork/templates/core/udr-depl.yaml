@@ -47,5 +47,3 @@ spec:
         - name: udr-cmap
           configMap:
             name: udr-cmap
-      nodeSelector:
-        kubernetes.io/hostname: {{ .Values.nodes.cluster }}
