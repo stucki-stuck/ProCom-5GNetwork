@@ -24,7 +24,7 @@ Superviseurs
 
 # Getting Started & Documentation
 
-Toute la documentation et le Getting Started se trouvent sur le [Wiki](-/wiki/home)
+Toute la documentation et le Getting Started se trouvent sur le [Wiki](https://gitlab.imt-atlantique.fr/b20stuck/mise-en-place-d-un-reseau-5g-dynamique/-/wikis/home)
 
 # Features
 
