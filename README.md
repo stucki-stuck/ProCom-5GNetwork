@@ -45,10 +45,10 @@ Toute la documentation et le Getting Started se trouvent sur le [Wiki](-/wiki/ho
 
 # Organisation du dépot GitLab
 
-- [Repository](-/tree/master)
-- [Issues/Boards](-/boards)
-- [Container Registry](container_registry)
-- [Wiki](-/wiki/home)
+- [Repository](https://gitlab.imt-atlantique.fr/b20stuck/mise-en-place-d-un-reseau-5g-dynamique/-/tree/master)
+- [Issues/Boards](https://gitlab.imt-atlantique.fr/b20stuck/mise-en-place-d-un-reseau-5g-dynamique/-/boards)
+- [Container Registry](https://gitlab.imt-atlantique.fr/b20stuck/mise-en-place-d-un-reseau-5g-dynamique/container_registry)
+- [Wiki](https://gitlab.imt-atlantique.fr/b20stuck/mise-en-place-d-un-reseau-5g-dynamique/-/wikis/home)
 
 # Contributeurs
 
