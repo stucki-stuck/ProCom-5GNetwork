@@ -44,21 +44,7 @@ spec:
     metadata:
       labels:
         nf-type: webui
-    spec:    
-      initContainers:
-        - name: init
-          imagePullPolicy: {{ .Values.webui.initContainer.image.pullPolicy }}
-          image: "{{ .Values.webui.initContainer.image.repository }}:{{ .Values.webui.initContainer.image.tag }}"  
-          env:
-          - name: MDB_HOST
-            value: mongodb-5g-svc
-          command: 
-            - /bin/bash
-            - /add_admin.sh
-          volumeMounts:
-          - name: account-creation
-            mountPath: /add_admin.sh
-            subPath: add_admin.sh
+    spec:
       containers:
       - name: webui
         imagePullPolicy: {{ .Values.webui.image.pullPolicy }}

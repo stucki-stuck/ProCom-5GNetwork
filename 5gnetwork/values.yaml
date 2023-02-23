@@ -45,6 +45,7 @@ k8s:
 
 # Mongodb is depolyed with bitnami cf chart.yaml
 mongodb:
+  initdbScriptsConfigMap: "mongodb-cmap"
   nodeSelector:
     kubernetes.io/hostname: "computer2-5g"
   service:
