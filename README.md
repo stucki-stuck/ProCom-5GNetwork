@@ -45,10 +45,10 @@ Toute la documentation et le Getting Started se trouvent sur le [Wiki](-/wiki/ho
 
 # Organisation du dépot GitLab
 
-- Repository
-- Issues/Boards
-- Container Registry
-- Wiki
+- [Repository](-/tree/master)
+- [Issues/Boards](-/boards)
+- [Container Registry](container_registry)
+- [Wiki](-/wiki/home)
 
 # Contributeurs
 
