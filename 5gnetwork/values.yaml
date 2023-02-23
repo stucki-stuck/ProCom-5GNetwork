@@ -45,9 +45,13 @@ k8s:
 
 # Mongodb is depolyed with bitnami cf chart.yaml
 mongodb:
+  nodeSelector:
+    kubernetes.io/hostname: "computer2-5g"
   service:
     nameOverride: "mongodb-5g-svc"
   auth:
     enabled: false
   persistence:
-    enabled: false
+    enabled: true
+    resourcePolicy: "keep"
+    storageClass: "manual"
