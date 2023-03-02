@@ -13,14 +13,7 @@ Les étapes du projet consisteront à :
 Il est possible d’étendre l’étude à des sujets connexes comme, par exemple, l’influence de la charge du réseau sur la consommation énergétique.
 
 # Table des matières
-ProCom : 5GNetwork  
-Table des matières  
-Getting Started & Documentation  
-Features  
-Technologies  
-Organisation du dépot GitLab  
-Contributeurs  
-Superviseurs  
+[[_TOC_]]
 
 # Getting Started & Documentation
 
