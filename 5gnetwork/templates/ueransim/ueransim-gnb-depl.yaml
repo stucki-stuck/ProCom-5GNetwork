@@ -37,7 +37,7 @@ spec:
             until nc -u -z amfran-svc 38412 > /dev/null; 
             do echo Waiting for amfran.; 
             sleep 2;
-            done; echo amf started; sleep 30; echo done;
+            done; echo amf started; sleep 45; echo done;
       containers:
         - name: ueransim-gnb
           image: "{{ .Values.ueransim.image.repository }}:{{ .Values.ueransim.image.tag }}"

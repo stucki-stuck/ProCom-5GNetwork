@@ -6,17 +6,18 @@ open5gs:
   image:
     repository: gitlab-registry.imt-atlantique.fr/b20stuck/mise-en-place-d-un-reseau-5g-dynamique/open5gs
     pullPolicy: IfNotPresent
-    tag: "v0.1"
+    tag: "v0.3"
     imagePullSecrets: gitlabimta
 
-ueransim: # NEW 
+ueransim:
   image:
     repository: gitlab-registry.imt-atlantique.fr/b20stuck/mise-en-place-d-un-reseau-5g-dynamique/ueransim
     pullPolicy: IfNotPresent
-    tag: "v0.4"
+    tag: "v0.5"
     imagePullSecrets: gitlabimta
   ue:
     initialMSISDN: '0000000001'
+    numberUEs: "1"
 
 webui:
   image:
@@ -45,7 +46,6 @@ k8s:
 
 # Mongodb is depolyed with bitnami cf chart.yaml
 mongodb:
-  initdbScriptsConfigMap: "mongodb-cmap"
   nodeSelector:
     kubernetes.io/hostname: "computer2-5g"
   service:

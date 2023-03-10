@@ -1,5 +1,6 @@
 5gnetwork/charts/
 5gnetwork/Chart.lock
+other/
 
 # Various IDEs
 .project

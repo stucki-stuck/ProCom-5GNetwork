@@ -9,6 +9,12 @@ data:
     logger:
         file: /open5gs/udr.log
 
+    sbi:
+      server:
+        no_tls: true
+      client:
+        no_tls: true
+    
     db_uri: mongodb://mongodb-5g-svc:27017/open5gs
 
     udr:

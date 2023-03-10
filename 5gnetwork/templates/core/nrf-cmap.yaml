@@ -8,6 +8,12 @@ data:
   nrf.yaml: |
     logger:
         file: /open5gs/nrf.log
+        
+    sbi:
+      server:
+        no_tls: true
+      client:
+        no_tls: true
 
     nrf:
         sbi:

@@ -9,6 +9,12 @@ data:
     logger:
         file: /open5gs/nssf.log
 
+    sbi:
+      server:
+        no_tls: true
+      client:
+        no_tls: true
+
     nssf:
       sbi:     
       - addr: 0.0.0.0

@@ -23,23 +23,30 @@ spec:
             until nc -u -z ueransim-gnb-svc 4997 > /dev/null; 
             do echo Waiting for gnb.; 
             sleep 2;
-            done; echo gnb started; sleep 60; echo done;
+            done; echo gnb started; sleep 100; echo done;
       containers:
         - name: ueransim-ue
           image: "{{ .Values.ueransim.image.repository }}:{{ .Values.ueransim.image.tag }}"
           imagePullPolicy: {{ .Values.ueransim.image.pullPolicy }}
+          securityContext:
+            privileged: true
           command: ["/bin/sh", "-c"]
           args:
           - cd /UERANSIM;
-            ./build/nr-ue -c config/open5gs-ue.yaml;
+            ./build/nr-ue -c config/open5gs-ue.yaml -n {{ .Values.ueransim.ue.numberUEs }} -r;
             echo '********* Should not get here --> this means ueransim-ue is broken!'
           volumeMounts:
           - name: ueransim-ue-cmap
             mountPath: /UERANSIM/config/open5gs-ue.yaml
-            subPath: "open5gs-ue.yaml"          
+            subPath: "open5gs-ue.yaml"
+          - name: dev-net-tun
+            mountPath: /dev/net/tun
       volumes:
         - name: ueransim-ue-cmap
           configMap:
             name: ueransim-ue-cmap  
+        - name: dev-net-tun
+          hostPath:
+            path: /dev/net/tun
       imagePullSecrets:
         - name: {{ .Values.ueransim.image.imagePullSecrets }}
