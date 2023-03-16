@@ -31,8 +31,6 @@ data:
         subnet:
          - addr: 10.45.0.1/16
            dnn: {{ .Values.dnn }}
-         - addr: 10.46.0.1/16
-           dnn: {{ .Values.dnn2 }}
         dns:
           - 8.8.8.8
           - 8.8.4.4
@@ -46,5 +44,3 @@ data:
       pfcp:
         - name: upf-svc
           dnn: {{ .Values.dnn }}
-        - name: upfmec-svc
-          dnn: {{ .Values.dnn2 }}

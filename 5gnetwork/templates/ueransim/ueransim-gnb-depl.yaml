@@ -42,10 +42,18 @@ spec:
         - name: ueransim-gnb
           image: "{{ .Values.ueransim.image.repository }}:{{ .Values.ueransim.image.tag }}"
           imagePullPolicy: {{ .Values.ueransim.image.pullPolicy }}
+          env:
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
           command: ["/bin/sh", "-c"]
           args:
           - cd /UERANSIM;
-            ./build/nr-gnb -c config/open5gs-gnb.yaml;
+            echo "$POD_IP";
+            cp config/open5gs-gnb.yaml config/open5gs-gnb-new.yaml;
+            sed -i "s/THIS-WILL-BE-CHANGED-WHEN-UERANSIM-IS-LAUNCHED-WITH-KUBE/$POD_IP/g" config/open5gs-gnb-new.yaml;
+            ./build/nr-gnb -c config/open5gs-gnb-new.yaml;
             echo '********* Should not get here --> this means ueransim-gnb is broken!'
           volumeMounts:
           - name: ueransim-gnb-cmap

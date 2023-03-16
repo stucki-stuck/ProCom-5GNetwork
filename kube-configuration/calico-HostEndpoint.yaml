@@ -1,7 +1,0 @@
-apiVersion: projectcalico.org/v3
-kind: HostEndpoint
-metadata:
-  name: computer3-5g
-spec:
-  interfaceName: enp0s31f6
-  node: computer3-5g
