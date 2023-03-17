@@ -21,9 +21,9 @@ Toute la documentation et le [Getting Started](https://gitlab.imt-atlantique.fr/
 
 # Features
 
-- (Partiel) Déploiement d’un réseau 5G cœur avec Kubernetes
-- (Partiel) Déploiement d’un réseau d’accès avec UERANSIM (GnodeB)
-- (Partiel) Déploiement de terminaux virtuels avec UERANSIM (UE)
+- Déploiement d’un réseau 5G cœur avec Kubernetes
+- Déploiement d’un réseau d’accès avec UERANSIM (GnodeB)
+- Déploiement de terminaux virtuels avec UERANSIM (UE)
 
 # Technologies
 
