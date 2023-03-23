@@ -57,7 +57,7 @@ Gabriel Vidal
 
 # Superviseurs
 
-Julien Saint-Martin 
+Julien Saint-Martin  
 
 Alberto Blanc
 
